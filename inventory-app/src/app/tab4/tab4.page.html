@@ -1,0 +1,134 @@
+<!--
+  Tab4 template - privacy & security information.
+  Author: Liwei Jin
+-->
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Privacy &amp; Security</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="shield-checkmark-outline" color="primary"></ion-icon>
+        Our commitment
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      The Inventory App is designed to help authorised staff manage stock
+      data stored on a central REST server. We only request the minimum
+      amount of information required to operate the service and we never
+      share your inventory data with unrelated third parties.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Data we handle</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <h3>Inventory records</h3>
+            <p>Item name, category, quantity, price, supplier, stock
+               status, featured flag, and an optional note.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>No personal data</h3>
+            <p>The application itself does not collect user-identifiable
+               personal information.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>No device data</h3>
+            <p>We do not read contacts, location, photos, or any other
+               sensitive device-level information.</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>How we keep it safe</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <h3>Encrypted transport</h3>
+            <p>All communication with the backend occurs over HTTPS so
+               data in transit is encrypted.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Input validation</h3>
+            <p>Strict client-side validation prevents malformed or
+               malicious payloads from being submitted.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Minimum privilege</h3>
+            <p>The app only invokes the documented REST operations and
+               does not attempt administrative or schema changes.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Safe deletion</h3>
+            <p>Destructive operations require an explicit confirmation
+               dialog. Certain protected records (e.g. "Laptop") cannot
+               be removed.</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Your responsibilities</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <h3>Keep your device locked</h3>
+            <p>Use a strong screen-lock method so unauthorised users
+               cannot open the app on your behalf.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Verify inputs</h3>
+            <p>Double-check item names before updating or deleting to
+               avoid accidental data loss.</p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Report issues</h3>
+            <p>If you suspect a record has been tampered with or data has
+               leaked, contact your administrator immediately.</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Floating help button -->
+  <app-help-button
+    header="Privacy - Quick Help"
+    subHeader="Your rights & safeguards"
+    [message]="helpText">
+  </app-help-button>
+</ion-content>
