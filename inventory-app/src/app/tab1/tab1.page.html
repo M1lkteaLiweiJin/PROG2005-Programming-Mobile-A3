@@ -1,0 +1,112 @@
+<!--
+  Tab1 template - inventory list + name lookup.
+  Author: Liwei Jin
+-->
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Inventory</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="query"
+      name="query"
+      debounce="200"
+      placeholder="Search by item name..."
+      showClearButton="focus"
+      (ionClear)="clearSelection()">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="lookupByName()" color="primary" fill="solid">
+        <ion-icon slot="start" name="search-outline"></ion-icon>
+        Lookup
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($any($event))">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Lookup result card -->
+  <ion-list *ngIf="selected" inset="true">
+    <ion-item>
+      <ion-label>
+        <h2>{{ selected.item_name }}</h2>
+        <p>Category: {{ selected.category }}</p>
+        <p>Supplier: {{ selected.supplier_name }}</p>
+        <p>Quantity: {{ selected.quantity }} &middot; Price: {{ selected.price }}</p>
+        <p *ngIf="selected.special_note">Note: {{ selected.special_note }}</p>
+      </ion-label>
+      <ion-chip slot="end" [ngClass]="statusClass(selected.stock_status)">
+        {{ selected.stock_status }}
+      </ion-chip>
+      <ion-icon
+        *ngIf="isFeatured(selected)"
+        slot="end"
+        color="warning"
+        name="star">
+      </ion-icon>
+    </ion-item>
+    <ion-item button detail="false" (click)="clearSelection()">
+      <ion-label color="medium">Clear selection</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Error banner -->
+  <ion-text color="danger" *ngIf="errorMessage" class="ion-padding-start">
+    <p>{{ errorMessage }}</p>
+    <ion-button size="small" (click)="loadAll()">
+      <ion-icon slot="start" name="refresh-outline"></ion-icon>
+      Retry
+    </ion-button>
+  </ion-text>
+
+  <!-- Loading spinner -->
+  <div class="ion-text-center ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <!-- Full list -->
+  <ion-list *ngIf="!loading && filteredItems.length > 0">
+    <ion-item *ngFor="let item of filteredItems" button detail="true">
+      <ion-icon
+        *ngIf="isFeatured(item)"
+        slot="start"
+        color="warning"
+        name="star">
+      </ion-icon>
+      <ion-icon
+        *ngIf="!isFeatured(item)"
+        slot="start"
+        name="cube-outline"
+        color="medium">
+      </ion-icon>
+      <ion-label>
+        <h2>{{ item.item_name }}</h2>
+        <ion-note>{{ item.category }} &middot; {{ item.supplier_name }}</ion-note>
+        <p>Qty: {{ item.quantity }} &middot; Price: {{ item.price }}</p>
+      </ion-label>
+      <ion-badge slot="end" color="primary">#{{ item.item_id }}</ion-badge>
+      <ion-chip slot="end" [ngClass]="statusClass(item.stock_status)">
+        {{ item.stock_status }}
+      </ion-chip>
+    </ion-item>
+  </ion-list>
+
+  <!-- Empty state -->
+  <div
+    class="ion-text-center ion-padding"
+    *ngIf="!loading && filteredItems.length === 0 && !errorMessage">
+    <ion-icon name="list-outline" size="large" color="medium"></ion-icon>
+    <p>No inventory records match your search.</p>
+  </div>
+
+  <!-- Floating help button -->
+  <app-help-button
+    header="Inventory - Quick Help"
+    subHeader="Search & refresh"
+    [message]="helpText">
+  </app-help-button>
+</ion-content>
