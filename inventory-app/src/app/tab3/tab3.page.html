@@ -1,0 +1,161 @@
+<!--
+  Tab3 template - update / delete by item name.
+  Author: Liwei Jin
+-->
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Edit / Delete</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="lookupName"
+      name="lookupName"
+      placeholder="Exact item name..."
+      showClearButton="focus">
+    </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid" (click)="loadRecord()">
+        <ion-icon slot="start" name="search-outline"></ion-icon>
+        Load
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="ion-text-center ion-padding" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <ion-text color="danger" *ngIf="errorMessage && !loading" class="ion-padding-start">
+    <p>{{ errorMessage }}</p>
+  </ion-text>
+
+  <div *ngIf="!loaded && !loading && !errorMessage" class="ion-text-center ion-padding">
+    <ion-icon name="create-outline" size="large" color="medium"></ion-icon>
+    <p>Search for an item by name to edit or delete it.</p>
+  </div>
+
+  <form *ngIf="loaded" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <ion-list inset="true">
+      <ion-item>
+        <ion-input
+          label="Item name (locked)"
+          labelPlacement="stacked"
+          formControlName="item_name">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select
+          label="Category *"
+          labelPlacement="stacked"
+          interface="popover"
+          formControlName="category">
+          <ion-select-option *ngFor="let c of categories" [value]="c">
+            {{ c }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          label="Quantity *"
+          labelPlacement="stacked"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          formControlName="quantity">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('quantity')?.touched && ctrl('quantity')?.invalid">
+        Quantity must be a non-negative whole number.
+      </ion-note>
+
+      <ion-item>
+        <ion-input
+          label="Price *"
+          labelPlacement="stacked"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          formControlName="price">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('price')?.touched && ctrl('price')?.invalid">
+        Price must be a non-negative whole number.
+      </ion-note>
+
+      <ion-item>
+        <ion-input
+          label="Supplier name *"
+          labelPlacement="stacked"
+          formControlName="supplier_name">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('supplier_name')?.touched && ctrl('supplier_name')?.invalid">
+        Supplier name is required.
+      </ion-note>
+
+      <ion-item>
+        <ion-select
+          label="Stock status *"
+          labelPlacement="stacked"
+          interface="popover"
+          formControlName="stock_status">
+          <ion-select-option *ngFor="let s of statuses" [value]="s">
+            {{ s }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Featured item</ion-label>
+        <ion-toggle slot="end" formControlName="featured"></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea
+          label="Special note (optional)"
+          labelPlacement="stacked"
+          autoGrow="true"
+          maxlength="500"
+          formControlName="special_note">
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <div class="ion-padding action-row">
+      <ion-button
+        expand="block"
+        type="submit"
+        color="primary"
+        [disabled]="saving || deleting">
+        <ion-spinner *ngIf="saving" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!saving" slot="start" name="save-outline"></ion-icon>
+        {{ saving ? 'Saving...' : 'Save changes' }}
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        color="danger"
+        type="button"
+        (click)="remove()"
+        [disabled]="saving || deleting">
+        <ion-spinner *ngIf="deleting" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!deleting" slot="start" name="trash-outline"></ion-icon>
+        {{ deleting ? 'Deleting...' : 'Delete item' }}
+      </ion-button>
+    </div>
+  </form>
+
+  <!-- Floating help button -->
+  <app-help-button
+    header="Edit / Delete - Quick Help"
+    subHeader="Update & remove"
+    [message]="helpText">
+  </app-help-button>
+</ion-content>
