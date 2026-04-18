@@ -1,0 +1,173 @@
+<!--
+  Tab2 template - add record + list featured items.
+  Author: Liwei Jin
+-->
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Add Item</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <ion-list inset="true">
+      <!-- Item name -->
+      <ion-item>
+        <ion-input
+          label="Item name *"
+          labelPlacement="stacked"
+          type="text"
+          placeholder="e.g. Desk Chair"
+          formControlName="item_name"
+          autocapitalize="words"
+          maxlength="80">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('item_name')?.touched && ctrl('item_name')?.invalid">
+        A valid non-empty name is required.
+      </ion-note>
+
+      <!-- Category -->
+      <ion-item>
+        <ion-select
+          label="Category *"
+          labelPlacement="stacked"
+          interface="popover"
+          formControlName="category">
+          <ion-select-option *ngFor="let c of categories" [value]="c">
+            {{ c }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Quantity -->
+      <ion-item>
+        <ion-input
+          label="Quantity *"
+          labelPlacement="stacked"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          formControlName="quantity">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('quantity')?.touched && ctrl('quantity')?.invalid">
+        Quantity must be a non-negative whole number.
+      </ion-note>
+
+      <!-- Price -->
+      <ion-item>
+        <ion-input
+          label="Price *"
+          labelPlacement="stacked"
+          type="number"
+          min="0"
+          inputmode="numeric"
+          formControlName="price">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('price')?.touched && ctrl('price')?.invalid">
+        Price must be a non-negative whole number.
+      </ion-note>
+
+      <!-- Supplier -->
+      <ion-item>
+        <ion-input
+          label="Supplier name *"
+          labelPlacement="stacked"
+          type="text"
+          formControlName="supplier_name"
+          maxlength="80">
+        </ion-input>
+      </ion-item>
+      <ion-note color="danger" class="ion-padding-start"
+               *ngIf="ctrl('supplier_name')?.touched && ctrl('supplier_name')?.invalid">
+        Supplier name is required.
+      </ion-note>
+
+      <!-- Stock status -->
+      <ion-item>
+        <ion-select
+          label="Stock status *"
+          labelPlacement="stacked"
+          interface="popover"
+          formControlName="stock_status">
+          <ion-select-option *ngFor="let s of statuses" [value]="s">
+            {{ s }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Featured -->
+      <ion-item>
+        <ion-label>Featured item</ion-label>
+        <ion-toggle slot="end" formControlName="featured"></ion-toggle>
+      </ion-item>
+
+      <!-- Optional note -->
+      <ion-item>
+        <ion-textarea
+          label="Special note (optional)"
+          labelPlacement="stacked"
+          autoGrow="true"
+          maxlength="500"
+          formControlName="special_note">
+        </ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <div class="ion-padding">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="submitting"
+        color="primary">
+        <ion-spinner *ngIf="submitting" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!submitting" slot="start" name="add-circle-outline"></ion-icon>
+        {{ submitting ? 'Creating...' : 'Create item' }}
+      </ion-button>
+    </div>
+  </form>
+
+  <!-- Featured list -->
+  <ion-accordion-group [value]="'featured'">
+    <ion-accordion value="featured">
+      <ion-item slot="header" color="light">
+        <ion-icon slot="start" name="star" color="warning"></ion-icon>
+        <ion-label>Featured items</ion-label>
+        <ion-badge slot="end" color="warning">{{ featured.length }}</ion-badge>
+      </ion-item>
+      <div slot="content" class="ion-padding-horizontal">
+        <div class="ion-text-center ion-padding" *ngIf="loadingFeatured">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+
+        <ion-list *ngIf="!loadingFeatured">
+          <ion-item *ngFor="let f of featured">
+            <ion-icon slot="start" name="star" color="warning"></ion-icon>
+            <ion-label>
+              <h2>{{ f.item_name }}</h2>
+              <p>{{ f.category }} &middot; Qty: {{ f.quantity }}</p>
+            </ion-label>
+            <ion-badge slot="end" color="primary">#{{ f.item_id }}</ion-badge>
+          </ion-item>
+          <ion-item *ngIf="featured.length === 0">
+            <ion-label color="medium">
+              No featured items yet. Enable "Featured" when creating or updating a record.
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <!-- Floating help button -->
+  <app-help-button
+    header="Add Item - Quick Help"
+    subHeader="Form & featured"
+    [message]="helpText">
+  </app-help-button>
+</ion-content>
